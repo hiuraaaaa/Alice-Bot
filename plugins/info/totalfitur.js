@@ -1,30 +1,30 @@
-const handler = async (m, { sock, reply }) => {
-  try {
-    if (!global.plugins) return reply("❌ No plugins loaded.");
+const aliceHandler = async (m, { sock, reply }) => {
+    try {
+        if (!global.plugins) {
+            return reply("❌ Tidak ada plugin yang dimuat.");
+        }
 
-    // Hitung total plugin
-    const total = Object.keys(global.plugins).length;
+        const total = Object.keys(global.plugins).length;
+        const pluginList = Object.keys(global.plugins)
+            .map((p, i) => `${i + 1}. ${p}`)
+            .join('\n');
 
-    // Buat daftar plugin aktif (opsional)
-    const pluginList = Object.keys(global.plugins).map((p, i) => `${i + 1}. ${p}`).join('\n');
+        const caption = `✅ *Total Fitur Aktif:* ${total}\n\n` +
+            `📌 *Daftar Fitur:*\n${pluginList}`;
 
-    const caption = `
-✅ Total Active Features: ${total}
+        await reply(caption);
 
-📌 List of Features:
-${pluginList}
-    `.trim();
-
-    await reply(caption);
-
-  } catch (err) {
-    console.error("[TOTALFITUR ERROR]", err);
-    await reply("❌ An error occurred while counting features.");
-  }
+        return true;
+    } catch (err) {
+        console.error(err);
+        await reply("❌ Terjadi kesalahan saat menghitung fitur.");
+        return false;
+    }
 };
 
-handler.help = ["totalfitur"];
-handler.tags = ["tools", "info"];
-handler.command = /^(totalfitur|features)$/i;
+aliceHandler.help = ["totalfitur", "features"];
+aliceHandler.tags = ["info"];
+aliceHandler.command = /^(totalfitur|features)$/i;
+aliceHandler.limit = false;
 
-export default handler;
+export default aliceHandler;
