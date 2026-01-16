@@ -1,34 +1,45 @@
 import fetch from "node-fetch";
 
-const waifuHandler = async (m, { sock, sender }) => {
+const aliceHandler = async (m, { sock, sender }) => {
     try {
-        const api = "https://kuronekoapies.movanest.xyz/api/random/waifu";
+        await sock.sendMessage(m.key.remoteJid, { 
+            text: global.mess.wait 
+        }, { quoted: m });
 
-        // Fetch gambar dari API (langsung buffer)
+        const api = "https://kuronekoapies.movanest.xyz/api/random/waifu";
         const res = await fetch(api);
-        if (!res.ok) throw new Error(`Status ${res.status}`);
+        
+        if (!res.ok) {
+            await sock.sendMessage(m.key.remoteJid, {
+                text: "❌ Gagal mengambil gambar waifu."
+            }, { quoted: m });
+            return false;
+        }
 
         const buffer = Buffer.from(await res.arrayBuffer());
 
-        // Kirim gambar ke WhatsApp
         await sock.sendMessage(m.key.remoteJid, {
             image: buffer,
-            caption: `✨ Random Waifu\nUntuk: @${sender.split("@")[0]}`
+            caption: `✨ *Random Waifu*\n\nUntuk: @${sender.split("@")[0]}`
         }, {
             quoted: m,
             mentions: [sender]
         });
 
-    } catch (e) {
-        console.error("WAIFU ERROR:", e);
+        return true;
+    } catch (err) {
+        console.error(err);
         await sock.sendMessage(m.key.remoteJid, {
-            text: "❌ Gagal mengambil gambar waifu."
+            text: "❌ Terjadi kesalahan saat mengambil gambar."
         }, { quoted: m });
+        return false;
     }
 };
 
-waifuHandler.help = ["waifu"];
-waifuHandler.tags = ["fun", "random"];
-waifuHandler.command = /^waifu$/i;
+aliceHandler.help = ["waifu"];
+aliceHandler.tags = ["random"];
+aliceHandler.command = /^(waifu)$/i;
+aliceHandler.limit = false;
+aliceHandler.cooldown = 5000;
 
-export default waifuHandler;
+export default aliceHandler;
