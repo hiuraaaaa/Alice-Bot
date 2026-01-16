@@ -1,69 +1,57 @@
-/**
- * Spotify Downloader Plugin
- * Versi fetch (Native Node.js 20+)
- */
-
-const handler = async (msg, { sock, reply, text, command, from }) => {
-
-    if (!text) return reply(`Mau download apa? Contoh: *${command} shape of you*`);
+const aliceHandler = async (msg, { sock, reply, text, command, from }) => {
+    if (!text) {
+        return reply(`❗ Masukkan judul lagu\nContoh: ${global.prefix}${command} shape of you`);
+    }
 
     try {
-        await reply("_Sabar, gue cari lagunya dulu..._");
+        await reply(global.mess.wait);
 
         const url = `https://api.ootaizumi.web.id/downloader/spotifyplay?query=${encodeURIComponent(text)}`;
-
         const res = await fetch(url);
         const data = await res.json();
 
         if (!data.status || !data.result) {
-            reply("Lagu nggak ketemu. Coba judul lain, jangan typo!");
+            await reply("❌ Lagu tidak ditemukan. Coba judul lain!");
             return false;
         }
 
         const r = data.result;
 
-        const caption = `
-🎵 *SPOTIFY DOWNLOADER* 🎵
+        const caption = `🎵 *SPOTIFY DOWNLOADER*\n\n` +
+            `📑 *Judul:* ${r.title}\n` +
+            `👤 *Artis:* ${r.artists}\n` +
+            `💿 *Album:* ${r.album}\n` +
+            `📅 *Rilis:* ${r.release_date}\n\n` +
+            `⏳ Mengirim audio...`;
 
-📑 *Judul:* ${r.title}
-👤 *Artis:* ${r.artists}
-💿 *Album:* ${r.album}
-📅 *Rilis:* ${r.release_date}
-🔗 *URL:* ${r.external_url}
-
-_Sabar ya, audionya gue kirimin..._
-        `.trim();
-
-        // Kirim cover + detail lagu
         await sock.sendMessage(from, {
             image: { url: r.image },
             caption
         }, { quoted: msg });
 
-        // Cek dulu download link
         if (!r.download) {
-            reply("Link download kosong. API-nya lagi error.");
+            await reply("❌ Link download tidak tersedia.");
             return false;
         }
 
-        // Kirim audio
         await sock.sendMessage(from, {
             audio: { url: r.download },
             mimetype: "audio/mpeg",
             fileName: `${r.title}.mp3`
         }, { quoted: msg });
 
-        return true; // Sukses → potong limit
-
+        return true;
     } catch (err) {
-        console.error("Spotify Plugin Error:", err);
-        reply("API-nya lagi error atau internet lo lemot.");
-        return false; // Error → jangan potong limit
+        console.error(err);
+        await reply("❌ Terjadi kesalahan saat mengunduh lagu.");
+        return false;
     }
 };
 
-handler.command = ['spotify', 'play', 'spdl'];
-handler.limit = 2;
-handler.cooldown = 10000;
+aliceHandler.help = ["spotify", "play", "spdl"];
+aliceHandler.tags = ["downloader"];
+aliceHandler.command = /^(spotify|play|spdl)$/i;
+aliceHandler.limit = 2;
+aliceHandler.cooldown = 10000;
 
-export default handler;
+export default aliceHandler;
