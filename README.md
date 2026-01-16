@@ -1,7 +1,7 @@
 # 🤖 Alice WhatsApp Bot
 
 <div align="center">
-  <img src="https://i.ibb.co/placeholder-alice-bot.png" alt="Alice Bot Logo" width="200"/>
+  <img src="https://nc-cdn.oss-us-west-1.aliyuncs.com/nekoo/1767965339176.jpg" alt="Alice Bot Logo" width="200"/>
   
   [![Node.js](https://img.shields.io/badge/Node.js-20+-green.svg)](https://nodejs.org/)
   [![Baileys](https://img.shields.io/badge/Baileys-Latest-blue.svg)](https://github.com/WhiskeySockets/Baileys)
