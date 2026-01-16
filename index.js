@@ -54,9 +54,7 @@ async function loadPlugins(isReload = false) {
                 const module = await import(pathToFileURL(filePath).href + '?update=' + Date.now());
                 if (!module.default) continue;
                 global.plugins[file] = module.default;
-                if (!isReload) {
-                    logger.plugin(folder, file);
-                }
+                if (!isReload) logger.plugin(folder, file);
                 loadedCount++;
             } catch (e) {
                 logger.error(`Gagal memuat plugin ${file}`, e);
@@ -64,9 +62,7 @@ async function loadPlugins(isReload = false) {
         }
     }
 
-    if (isReload) {
-        logger.success(`Berhasil memuat ulang ${loadedCount} plugin.`);
-    }
+    if (isReload) logger.success(`Berhasil memuat ulang ${loadedCount} plugin.`);
 }
 
 async function startBot() {
@@ -137,14 +133,11 @@ async function startBot() {
                 logger.warn("Sesi keluar. Hapus folder auth_info dan jalankan lagi.");
             }
         } else if (connection === 'open') {
-            // ✨ TAMPILKAN ASCII ART DULU
             logger.asciiArt();
-            
             logger.success("Bot WhatsApp berhasil tersambung!");
             logger.info(`Premium Users: ${global.premium.length} 👑`);
             logger.info(`Public Mode: ${global.isPublic ? 'ON 🌍' : 'OFF 🔒'}`);
             
-            // Notifikasi ke owner
             if (global.owner && global.owner.length > 0) {
                 const botNumber = sock.user.id.split(':')[0];
                 const time = new Date().toLocaleString('id-ID');
@@ -202,7 +195,6 @@ async function startBot() {
             const formattedOwners = (global.owner || []).map(o => o.replace(/\D/g, ''));
             const isOwner = formattedOwners.includes(senderId);
 
-            // ✨ LOG MESSAGE
             logger.message(msg, from, sender, body, isCmd, commandText);
 
             await handler({ msg, sock, body, from, args, text, commandText, isCmd, sender, isOwner });
