@@ -1,16 +1,13 @@
-// plugins/owner/ownerinfo.js
 import fs from "fs";
 
-const ownerInfoHandler = async (m, { sock, text }) => {
+const aliceHandler = async (m, { sock, text }) => {
     try {
         const ownerNumber = Array.isArray(global.owner) ? global.owner[0] : global.owner;
         const ownerJid = ownerNumber.includes("@s.whatsapp.net") ? ownerNumber : ownerNumber + "@s.whatsapp.net";
         const ownerName = global.ownerName || "Owner Bot";
 
-        // Caption default
-        const caption = text || `👋 Halo! Ini info owner bot:\n\nNama: ${ownerName}\nNomor: +${ownerNumber}`;
+        const caption = text || `👋 *Info Owner Bot*\n\n📛 Nama: ${ownerName}\n📱 Nomor: +${ownerNumber}`;
 
-        // Product card sederhana untuk Owner
         const productMessage = {
             product: {
                 productImage: { url: "https://nc-cdn.oss-us-west-1.aliyuncs.com/nekoo/1767887523286.jpg" },
@@ -31,14 +28,14 @@ const ownerInfoHandler = async (m, { sock, text }) => {
                     name: 'quick_reply',
                     buttonParamsJson: JSON.stringify({
                         display_text: 'Chat Owner',
-                        id: ".owner"
+                        id: `${global.prefix}owner`
                     })
                 },
                 {
                     name: 'quick_reply',
                     buttonParamsJson: JSON.stringify({
                         display_text: 'Menu Bot',
-                        id: ".menu"
+                        id: `${global.prefix}menu`
                     })
                 },
                 {
@@ -52,18 +49,21 @@ const ownerInfoHandler = async (m, { sock, text }) => {
             hasMediaAttachment: false
         };
 
-        // Kirim pesan
         await sock.sendMessage(m.key.remoteJid, productMessage, { quoted: m });
 
+        return true;
     } catch (err) {
-        console.error("Owner info plugin error:", err);
-        await sock.sendMessage(m.key.remoteJid, { text: "❌ Gagal mengirim info owner" }, { quoted: m });
+        console.error(err);
+        await sock.sendMessage(m.key.remoteJid, { 
+            text: "❌ Gagal mengirim info owner" 
+        }, { quoted: m });
+        return false;
     }
 };
 
-// Plugin info
-ownerInfoHandler.help = ["owner"];
-ownerInfoHandler.tags = ["info"];
-ownerInfoHandler.command = /^(owner|creator|pemilik)$/i;
+aliceHandler.help = ["owner", "creator"];
+aliceHandler.tags = ["info"];
+aliceHandler.command = /^(owner|creator|pemilik)$/i;
+aliceHandler.limit = false;
 
-export default ownerInfoHandler;
+export default aliceHandler;
