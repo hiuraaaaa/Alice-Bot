@@ -1,0 +1,37 @@
+{
+  "name": "whatsapp-bot",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "WhatsApp Bot with Premium Features",
+  "dependencies": {
+    "@hapi/boom": "^10.0.1",
+    "@nefu-team/core": "^1.0.1",
+    "axios": "^1.13.2",
+    "baileys": "^7.0.0-rc.9",
+    "didyoumean": "^1.2.2",
+    "fluent-ffmpeg": "^2.1.3",
+    "formdata-node": "^6.0.3",
+    "jimp": "^1.6.0",
+    "node-fetch": "^3.3.2",
+    "node-os-utils": "^2.0.1",
+    "node-upload-images": "^1.0.1",
+    "pino": "^10.1.0",
+    "pino-pretty": "^13.1.3",
+    "qrcode-terminal": "^0.12.0",
+    "readline": "^1.3.0",
+    "sharp": "^0.34.5",
+    "similarity": "^1.2.1",
+    "syntax-error": "^1.4.0",
+    "wa-sticker": "^1.0.14",
+    "yt-dlp-exec": "^1.0.2"
+  }
+} 

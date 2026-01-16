@@ -1,0 +1,8 @@
+{
+  "enabled": true,
+  "maxMessages": 5,
+  "timeWindow": 10000,
+  "warnLimit": 3,
+  "banDuration": 3600000,
+  "autoUnban": true
+}

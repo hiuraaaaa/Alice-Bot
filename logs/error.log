@@ -1,0 +1,6 @@
+[16/01/2026, 06.04.45] [ERROR  ] Gagal meminta Pairing Code
+[16/01/2026, 06.04.45] Error: Connection Closed
+    at sendRawMessage (file:///data/data/com.termux/files/home/wa-bot/node_modules/baileys/lib/Socket/socket.js:50:19)
+    at sendNode (file:///data/data/com.termux/files/home/wa-bot/node_modules/baileys/lib/Socket/socket.js:69:16)
+    at Object.requestPairingCode (file:///data/data/com.termux/files/home/wa-bot/node_modules/baileys/lib/Socket/socket.js:596:15)
+    at async requestPairing (file:///data/data/com.termux/files/home/wa-bot/index.js:111:28)
