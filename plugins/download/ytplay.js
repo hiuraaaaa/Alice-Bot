@@ -1,63 +1,57 @@
-/**
- * Spotify / YouTube Music Downloader Plugin
- * Native fetch Node.js 20+
- */
-
-const handler = async (msg, { sock, reply, text, command, from }) => {
-  if (!text) return reply(`Mau download lagu apa? Contoh: *${command} 2002 Anne-Marie*`);
-
-  try {
-    await reply("_Sabar, gue cari lagunya dulu..._");
-
-    // 1. Panggil API
-    const url = `https://api.nekolabs.web.id/downloader/youtube/play/v1?q=${encodeURIComponent(text)}`;
-    const res = await fetch(url);
-    const data = await res.json();
-
-    if (!data.success || !data.result) {
-      return reply("❌ Lagu nggak ketemu. Coba judul lain, jangan typo!");
+const aliceHandler = async (msg, { sock, reply, text, command, from }) => {
+    if (!text) {
+        return reply(`❗ Masukkan judul lagu\nContoh: ${global.prefix}${command} 2002 Anne-Marie`);
     }
 
-    const r = data.result;
-    const meta = r.metadata;
+    try {
+        await reply(global.mess.wait);
 
-    const caption = `
-🎵 *MUSIK DOWNLOADER* 🎵
+        const url = `https://api.nekolabs.web.id/downloader/youtube/play/v1?q=${encodeURIComponent(text)}`;
+        const res = await fetch(url);
+        const data = await res.json();
 
-📑 *Judul:* ${meta.title}
-👤 *Artis / Channel:* ${meta.channel}
-⏱ *Durasi:* ${meta.duration}
-🔗 *URL Video:* ${meta.url}
+        if (!data.success || !data.result) {
+            await reply("❌ Lagu tidak ditemukan. Coba judul lain!");
+            return false;
+        }
 
-_Sabar ya, audionya gue kirimin..._
-    `.trim();
+        const r = data.result;
+        const meta = r.metadata;
 
-    // 2. Kirim cover + info lagu
-    await sock.sendMessage(from, {
-      image: { url: meta.cover },
-      caption
-    }, { quoted: msg });
+        const caption = `🎵 *MUSIK DOWNLOADER*\n\n` +
+            `📑 *Judul:* ${meta.title}\n` +
+            `👤 *Channel:* ${meta.channel}\n` +
+            `⏱ *Durasi:* ${meta.duration}\n\n` +
+            `⏳ Mengirim audio...`;
 
-    // 3. Kirim audio
-    if (!r.downloadUrl) return reply("❌ Link download kosong. API lagi error.");
+        await sock.sendMessage(from, {
+            image: { url: meta.cover },
+            caption
+        }, { quoted: msg });
 
-    await sock.sendMessage(from, {
-      audio: { url: r.downloadUrl },
-      mimetype: "audio/mpeg",
-      fileName: `${meta.title}.mp3`
-    }, { quoted: msg });
+        if (!r.downloadUrl) {
+            await reply("❌ Link download tidak tersedia.");
+            return false;
+        }
 
-    return true; // sukses → potong limit
+        await sock.sendMessage(from, {
+            audio: { url: r.downloadUrl },
+            mimetype: "audio/mpeg",
+            fileName: `${meta.title}.mp3`
+        }, { quoted: msg });
 
-  } catch (err) {
-    console.error("Music Downloader Plugin Error:", err);
-    reply("❌ API-nya lagi error atau koneksi lo lemot.");
-    return false; // error → jangan potong limit
-  }
+        return true;
+    } catch (err) {
+        console.error(err);
+        await reply("❌ Terjadi kesalahan saat mengunduh musik.");
+        return false;
+    }
 };
 
-handler.command = ['ytplay', 'music'];
-handler.limit = 2;
-handler.cooldown = 10000;
+aliceHandler.help = ["ytplay", "music"];
+aliceHandler.tags = ["downloader"];
+aliceHandler.command = /^(ytplay|music)$/i;
+aliceHandler.limit = 2;
+aliceHandler.cooldown = 10000;
 
-export default handler;
+export default aliceHandler;
