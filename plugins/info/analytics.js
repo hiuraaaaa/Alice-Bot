@@ -7,11 +7,10 @@ import {
     resetAnalytics 
 } from '../../lib/analyticsUtils.js';
 
-const analyticsHandler = async (m, { reply, args, isOwner }) => {
+const aliceHandler = async (m, { reply, args, isOwner }) => {
     const subCommand = args[0]?.toLowerCase();
 
     try {
-        // .analytics (tanpa args) - Tampilkan global stats
         if (!subCommand) {
             const stats = getGlobalStats();
             
@@ -32,7 +31,6 @@ const analyticsHandler = async (m, { reply, args, isOwner }) => {
             return reply(msg);
         }
 
-        // .analytics top - Top 10 plugins
         if (subCommand === 'top') {
             const topPlugins = getTopPlugins(10);
             
@@ -53,7 +51,6 @@ const analyticsHandler = async (m, { reply, args, isOwner }) => {
             return reply(msg);
         }
 
-        // .analytics worst - Worst 10 plugins
         if (subCommand === 'worst') {
             const worstPlugins = getWorstPlugins(10);
             
@@ -75,17 +72,15 @@ const analyticsHandler = async (m, { reply, args, isOwner }) => {
             return reply(msg);
         }
 
-        // .analytics reset - Reset semua data (owner only)
         if (subCommand === 'reset') {
             if (!isOwner) {
-                return reply('❌ Fitur ini hanya untuk Owner!');
+                return reply(global.mess.owner);
             }
             
             resetAnalytics();
             return reply('✅ *Analytics data berhasil direset!*\n\nSemua statistik telah dikembalikan ke 0.');
         }
 
-        // .analytics <pluginName> - Detail plugin
         const pluginStats = getPluginStats(subCommand);
         
         if (!pluginStats) {
@@ -104,7 +99,6 @@ const analyticsHandler = async (m, { reply, args, isOwner }) => {
             msg += `🕒 Last Used: ${new Date(pluginStats.lastUsed).toLocaleString('id-ID')}\n\n`;
         }
         
-        // Show error logs (owner only)
         if (isOwner && pluginStats.errorLogs && pluginStats.errorLogs.length > 0) {
             msg += `⚠️ *Recent Errors:*\n`;
             pluginStats.errorLogs.slice(0, 5).forEach((log, i) => {
@@ -120,14 +114,16 @@ const analyticsHandler = async (m, { reply, args, isOwner }) => {
         
         return reply(msg);
 
-    } catch (error) {
-        console.error('[ANALYTICS ERROR]:', error);
-        return reply('❌ Terjadi error saat mengambil data analytics.');
+    } catch (err) {
+        console.error(err);
+        return reply('❌ Terjadi kesalahan saat mengambil data analytics.');
     }
 };
 
-analyticsHandler.help = ["analytics"];
-analyticsHandler.tags = ["info"];
-analyticsHandler.command = /^(analytics|stats|statistics)$/i;
+aliceHandler.help = ["analytics", "stats"];
+aliceHandler.tags = ["info"];
+aliceHandler.command = /^(analytics|stats|statistics)$/i;
+aliceHandler.owner = false;
+aliceHandler.limit = false;
 
-export default analyticsHandler;
+export default aliceHandler;
