@@ -4,71 +4,36 @@ import { checkSpam, getAntiSpamConfig } from './lib/antiSpamUtils.js';
 import { trackCommand } from './lib/analyticsUtils.js';
 import { acquireLock, releaseLock } from './lib/lockUtils.js';
 
-/**
- * Normalisasi sender ID - hanya ambil angka
- * @param {string} sender - Format: 628xxx@s.whatsapp.net
- * @returns {string} Format: 628xxx
- */
 function normalizeSenderId(sender) {
     return sender.split("@")[0].replace(/\D/g, "");
 }
 
-/**
- * Check apakah user adalah premium (TANPA LIB!)
- * @param {string} senderId - Normalized sender ID
- * @returns {boolean}
- */
 function isPremiumUser(senderId) {
-    // Cek dari global.premium (array sederhana)
-    if (!global.premium) {
-        global.premium = []; // Initialize jika belum ada
-    }
-    
-    // Normalize semua premium user IDs
+    if (!global.premium) global.premium = [];
     const formattedPremium = global.premium.map(p => p.toString().replace(/\D/g, ""));
-    
     return formattedPremium.includes(senderId);
 }
 
 export default async function handler(opts) {
     const { msg, sock, body, from, args, text, commandText, isCmd, sender } = opts;
 
-    // Normalisasi sender ID untuk konsistensi di seluruh sistem
     const senderId = normalizeSenderId(sender);
-    
-    // Format owner juga untuk perbandingan yang akurat
     const formattedOwners = global.owner.map(o => o.replace(/\D/g, ""));
     const isOwner = formattedOwners.includes(senderId);
-    
-    // ✨ CEK PREMIUM STATUS (Pure JS, no lib!)
     const isPremium = isPremiumUser(senderId);
-    
-    // Deteksi apakah ini group chat
     const isGroup = from.endsWith('@g.us');
 
     const reply = (teks, options = {}) => sock.sendMessage(from, { text: teks, ...options }, { quoted: msg });
 
-    // =====================
-    // 🔒 CEK MODE SELF (PALING ATAS!)
-    // =====================
-    if (!global.isPublic && !isOwner) {
-        return;
-    }
+    if (!global.isPublic && !isOwner) return;
 
-    // =====================
-    // 🔐 ACQUIRE LOCK (PREVENT RACE CONDITION)
-    // =====================
     const lockAcquired = await acquireLock(senderId, 3000);
-    
     if (!lockAcquired) {
         console.warn(`[LOCK FAILED] ${senderId} - Message dropped`);
         return;
     }
 
     try {
-        // =====================
-        // 🛡️ CEK ANTI-SPAM (PREMIUM SKIP)
-        // =====================
         if (!isPremium && !isOwner) {
             const spamCheck = checkSpam(senderId, isOwner);
 
@@ -106,18 +71,9 @@ export default async function handler(opts) {
 
             const pluginName = plugin.name || fileName.replace('.js', '');
 
-            // Plugin 'all' -> jalan setiap message, tanpa command
             if (!isCmd && typeof plugin.all === 'function') {
                 try {
-                    await plugin.all(msg, { 
-                        sock, 
-                        reply, 
-                        sender, 
-                        from, 
-                        body, 
-                        isOwner,
-                        isPremium
-                    });
+                    await plugin.all(msg, { sock, reply, sender, from, body, isOwner, isPremium });
                 } catch(e) {
                     console.error(`[PLUGIN ALL ERROR] ${pluginName}:`, e);
                 }
@@ -128,23 +84,14 @@ export default async function handler(opts) {
             const cmdRegex = toRegex(plugin.command);
             if (!cmdRegex || !cmdRegex.test(commandText)) continue;
 
-            // =====================
-            // ✅ CEK ACCESS
-            // =====================
             if (plugin.owner && !isOwner) {
                 trackCommand(pluginName, 'failed', 'Access denied: owner only');
                 return reply(global.mess.owner);
             }
 
-            // ✨ CEK PREMIUM ONLY COMMAND (Pure flag check!)
             if (plugin.premium && !isPremium && !isOwner) {
                 trackCommand(pluginName, 'failed', 'Access denied: premium only');
-                return reply(
-                    `👑 *PREMIUM ONLY*\n\n` +
-                    `Perintah ini hanya untuk user premium.\n\n` +
-                    `💎 Upgrade ke premium untuk akses unlimited!\n` +
-                    `Hubungi owner untuk info lebih lanjut.`
-                );
+                return reply(`👑 *PREMIUM ONLY*\n\nPerintah ini hanya untuk user premium.\n\n💎 Upgrade ke premium untuk akses unlimited!\nHubungi owner untuk info lebih lanjut.`);
             }
 
             if (plugin.group && !isGroup) {
@@ -157,7 +104,6 @@ export default async function handler(opts) {
                 return reply(global.mess.private);
             }
 
-            // Fetch metadata hanya jika di group DAN diperlukan
             if ((plugin.admin || plugin.botAdmin) && isGroup) {
                 const metadata = await sock.groupMetadata(from).catch((err) => {
                     console.error(`[GROUP METADATA ERROR] ${pluginName}:`, err);
@@ -188,9 +134,6 @@ export default async function handler(opts) {
                 return reply('❌ Perintah ini hanya bisa digunakan di grup.');
             }
 
-            // =====================
-            // 💎 CEK LIMIT (PREMIUM SKIP!)
-            // =====================
             if (plugin.limit && !isOwner && !isPremium) {
                 const userLimit = getLimit(senderId);
                 const limitInfo = getLimitInfo(senderId);
@@ -210,17 +153,10 @@ export default async function handler(opts) {
                 }
             }
 
-            // =====================
-            // ⏳ CEK COOLDOWN (PREMIUM 50% FASTER!)
-            // =====================
             if (plugin.cooldown && !isOwner) {
                 const last = getCooldown(senderId, pluginName);
                 const now = Date.now();
-                
-                // ✨ Premium users get 50% cooldown reduction (Pure calculation!)
-                const effectiveCooldown = isPremium 
-                    ? Math.floor(plugin.cooldown * 0.5) 
-                    : plugin.cooldown;
+                const effectiveCooldown = isPremium ? Math.floor(plugin.cooldown * 0.5) : plugin.cooldown;
                 
                 if (now - last < effectiveCooldown) {
                     const sisa = Math.ceil((effectiveCooldown - (now - last)) / 1000);
@@ -232,14 +168,10 @@ export default async function handler(opts) {
                 }
             }
 
-            // =====================
-            // 🔥 EKSEKUSI PLUGIN
-            // =====================
             let executionSuccess = false;
             let shouldConsume = true;
             
             try {
-                // ✨ Pass isPremium flag ke plugin
                 const result = await plugin(msg, { 
                     sock, 
                     reply, 
@@ -249,12 +181,10 @@ export default async function handler(opts) {
                     sender, 
                     from, 
                     isOwner,
-                    isPremium // ✨ Plugin bisa cek status premium
+                    isPremium
                 });
 
-                if (result === false) {
-                    shouldConsume = false;
-                }
+                if (result === false) shouldConsume = false;
                 
                 executionSuccess = true;
                 trackCommand(pluginName, 'success', isPremium ? 'premium' : 'regular');
@@ -267,7 +197,6 @@ export default async function handler(opts) {
             }
 
             if (executionSuccess) {
-                // ✨ PREMIUM SKIP LIMIT CONSUMPTION!
                 if (plugin.limit && !isOwner && !isPremium && shouldConsume) {
                     const consumed = consumeLimit(senderId, plugin.limit);
                     if (!consumed) {
@@ -284,9 +213,6 @@ export default async function handler(opts) {
         }
         
     } finally {
-        // =====================
-        // 🔓 RELEASE LOCK
-        // =====================
         releaseLock(senderId);
     }
-} 
+            }
