@@ -1,47 +1,52 @@
 import fetch from 'node-fetch';
 import { Buffer } from 'buffer';
 
-const handler = async (m, { sock, reply, text, sender, consumeLimit }) => {
-  try {
-    if (!text) return reply(`❗ Please provide a prompt.\nExample: *${global.prefix}blink Cute cat*`);
+const aliceHandler = async (m, { sock, reply, text }) => {
+    if (!text) {
+        return reply(`❗ Masukkan prompt untuk generate gambar\nContoh: ${global.prefix}blink Cute cat`);
+    }
 
-    await reply("```\nGenerating image...\n```");
+    await reply(global.mess.wait);
 
-    const payload = {
-      prompt: text,
-      userAPIKey: "",
-      iterativeMode: false
-    };
+    try {
+        const payload = {
+            prompt: text,
+            userAPIKey: "",
+            iterativeMode: false
+        };
 
-    const response = await fetch('https://www.blinkshot.io/api/generateImages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
+        const response = await fetch('https://www.blinkshot.io/api/generateImages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
 
-    const data = await response.json();
+        const data = await response.json();
 
-    if (!data || !data.b64_json) return reply('❌ Failed to generate image.');
+        if (!data || !data.b64_json) {
+            await reply('❌ Gagal generate gambar.');
+            return false;
+        }
 
-    const imageBuffer = Buffer.from(data.b64_json, 'base64');
+        const imageBuffer = Buffer.from(data.b64_json, 'base64');
 
-    await sock.sendMessage(m.key.remoteJid, {
-      image: imageBuffer,
-      caption: `✅ Image generated successfully!\n⏱️ Inference: ${data.timings?.inference || 'N/A'}ms`
-    }, { quoted: m });
+        await sock.sendMessage(m.key.remoteJid, {
+            image: imageBuffer,
+            caption: `✅ Gambar berhasil dibuat!\n⏱️ Inference: ${data.timings?.inference || 'N/A'}ms`
+        }, { quoted: m });
 
-    if (consumeLimit) consumeLimit(sender, 1);
-
-  } catch (err) {
-    console.error("[BLINKSHOT ERROR]", err);
-    reply('❌ An error occurred while generating the image.');
-  }
+        return true;
+    } catch (err) {
+        console.error(err);
+        await reply('❌ Terjadi kesalahan saat generate gambar.');
+        return false;
+    }
 };
 
-handler.help = ['blink'];
-handler.tags = ['ai', 'image'];
-handler.command = /^(blink)$/i;
-handler.limit = true;
-handler.cooldown = 30000;
+aliceHandler.help = ['blink'];
+aliceHandler.tags = ['ai'];
+aliceHandler.command = /^(blink)$/i;
+aliceHandler.limit = true;
+aliceHandler.cooldown = 30000;
 
-export default handler;
+export default aliceHandler;
