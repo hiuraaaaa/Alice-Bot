@@ -2,22 +2,22 @@
   "plugins": {
     "analyticsHandler": {
       "name": "analyticsHandler",
-      "totalCalls": 16,
-      "success": 16,
+      "totalCalls": 18,
+      "success": 18,
       "failed": 0,
       "errors": 0,
       "successRate": "100.00",
-      "lastUsed": "2026-01-13T01:25:59.338Z",
+      "lastUsed": "2026-01-16T22:00:14.256Z",
       "errorLogs": []
     },
     "menuHandler": {
       "name": "menuHandler",
-      "totalCalls": 69,
-      "success": 67,
+      "totalCalls": 127,
+      "success": 125,
       "failed": 0,
       "errors": 2,
-      "successRate": "97.10",
-      "lastUsed": "2026-01-15T23:06:44.570Z",
+      "successRate": "98.43",
+      "lastUsed": "2026-01-22T23:44:05.393Z",
       "errorLogs": [
         {
           "message": "global.prefix.join is not a function",
@@ -41,62 +41,103 @@
     },
     "managePluginHandler": {
       "name": "managePluginHandler",
-      "totalCalls": 11,
-      "success": 11,
+      "totalCalls": 18,
+      "success": 18,
       "failed": 0,
       "errors": 0,
       "successRate": "100.00",
-      "lastUsed": "2026-01-13T10:19:30.077Z",
+      "lastUsed": "2026-01-27T14:23:13.763Z",
       "errorLogs": []
     },
     "modeHandler": {
       "name": "modeHandler",
-      "totalCalls": 6,
-      "success": 5,
-      "failed": 1,
+      "totalCalls": 15,
+      "success": 13,
+      "failed": 2,
       "errors": 0,
-      "successRate": "83.33",
-      "lastUsed": "2026-01-15T22:07:02.786Z",
+      "successRate": "86.67",
+      "lastUsed": "2026-01-22T23:43:59.016Z",
       "errorLogs": []
     },
     "handler": {
       "name": "handler",
-      "totalCalls": 102,
-      "success": 99,
+      "totalCalls": 205,
+      "success": 192,
       "failed": 3,
-      "errors": 0,
-      "successRate": "97.06",
-      "lastUsed": "2026-01-15T22:09:09.598Z",
-      "errorLogs": []
+      "errors": 10,
+      "successRate": "93.66",
+      "lastUsed": "2026-01-27T14:27:02.538Z",
+      "errorLogs": [
+        {
+          "message": "Unknown error",
+          "timestamp": "2026-01-18T08:56:00.504Z"
+        },
+        {
+          "message": "Unknown error",
+          "timestamp": "2026-01-18T08:52:42.551Z"
+        },
+        {
+          "message": "Unknown error",
+          "timestamp": "2026-01-18T08:45:39.040Z"
+        },
+        {
+          "message": "Unknown error",
+          "timestamp": "2026-01-18T08:45:08.648Z"
+        },
+        {
+          "message": "Cannot destructure property 'user' of 'jidDecode(...)' as it is undefined.",
+          "timestamp": "2026-01-18T08:13:07.245Z"
+        },
+        {
+          "message": "start is not defined",
+          "timestamp": "2026-01-17T09:31:15.568Z"
+        },
+        {
+          "message": "start is not defined",
+          "timestamp": "2026-01-17T09:30:46.981Z"
+        },
+        {
+          "message": "m.reply is not a function",
+          "timestamp": "2026-01-17T07:55:49.388Z"
+        },
+        {
+          "message": "start is not defined",
+          "timestamp": "2026-01-16T22:13:58.879Z"
+        },
+        {
+          "message": "start is not defined",
+          "timestamp": "2026-01-16T21:09:05.212Z"
+        }
+      ]
     },
     "sfHandler": {
       "name": "sfHandler",
-      "totalCalls": 96,
-      "success": 96,
-      "failed": 0,
+      "totalCalls": 237,
+      "success": 235,
+      "failed": 2,
       "errors": 0,
-      "successRate": "100.00",
-      "lastUsed": "2026-01-13T11:17:37.408Z",
+      "successRate": "99.16",
+      "lastUsed": "2026-01-27T13:01:35.452Z",
       "errorLogs": []
     },
     "toAnimeHandler": {
       "name": "toAnimeHandler",
-      "totalCalls": 8,
-      "success": 8,
+      "totalCalls": 10,
+      "success": 10,
       "failed": 0,
       "errors": 0,
       "successRate": "100.00",
-      "lastUsed": "2026-01-11T18:07:59.149Z",
+      "lastUsed": "2026-01-19T21:10:21.002Z",
       "errorLogs": []
     },
     "rfHandler": {
       "name": "rfHandler",
-      "totalCalls": 58,
-      "success": 58,
-      "failed": 0,
+      "totalCalls": 87,
+      "success": 86,
+      "failed": 1,
       "errors": 0,
-      "successRate": "100.00",
-      "lastUsed": "2026-01-13T11:17:34.973Z",
+      "successRate": "98.85",
+      "lastUsed": "2026-01-25T00:41:21.211Z",
       "errorLogs": []
     },
     "fluxHandler": {
@@ -121,12 +162,12 @@
     },
     "gfHandler": {
       "name": "gfHandler",
-      "totalCalls": 22,
-      "success": 22,
+      "totalCalls": 26,
+      "success": 26,
       "failed": 0,
       "errors": 0,
       "successRate": "100.00",
-      "lastUsed": "2026-01-13T10:19:57.881Z",
+      "lastUsed": "2026-01-27T14:23:37.078Z",
       "errorLogs": []
     },
     "gptHandler": {
@@ -151,22 +192,22 @@
     },
     "clearsession": {
       "name": "clearsession",
-      "totalCalls": 5,
-      "success": 5,
+      "totalCalls": 6,
+      "success": 6,
       "failed": 0,
       "errors": 0,
       "successRate": "100.00",
-      "lastUsed": "2026-01-13T11:02:00.232Z",
+      "lastUsed": "2026-01-16T22:12:17.405Z",
       "errorLogs": []
     },
     "cekLimitHandler": {
       "name": "cekLimitHandler",
-      "totalCalls": 11,
-      "success": 10,
+      "totalCalls": 12,
+      "success": 11,
       "failed": 0,
       "errors": 1,
-      "successRate": "90.91",
-      "lastUsed": "2026-01-15T22:08:26.028Z",
+      "successRate": "91.67",
+      "lastUsed": "2026-01-16T16:12:51.898Z",
       "errorLogs": [
         {
           "message": "getRemainingLimit is not defined",
@@ -323,13 +364,413 @@
       "successRate": "100.00",
       "lastUsed": "2026-01-13T02:14:50.805Z",
       "errorLogs": []
+    },
+    "aliceHandler": {
+      "name": "aliceHandler",
+      "totalCalls": 183,
+      "success": 177,
+      "failed": 6,
+      "errors": 0,
+      "successRate": "96.72",
+      "lastUsed": "2026-01-27T12:59:07.379Z",
+      "errorLogs": []
+    },
+    "subdoHandler": {
+      "name": "subdoHandler",
+      "totalCalls": 17,
+      "success": 17,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-25T09:45:14.254Z",
+      "errorLogs": []
+    },
+    "listSubdoHandler": {
+      "name": "listSubdoHandler",
+      "totalCalls": 27,
+      "success": 26,
+      "failed": 0,
+      "errors": 1,
+      "successRate": "96.30",
+      "lastUsed": "2026-01-25T09:48:20.760Z",
+      "errorLogs": [
+        {
+          "message": "m.reply is not a function",
+          "timestamp": "2026-01-16T20:58:05.351Z"
+        }
+      ]
+    },
+    "delSubdoHandler": {
+      "name": "delSubdoHandler",
+      "totalCalls": 6,
+      "success": 5,
+      "failed": 0,
+      "errors": 1,
+      "successRate": "83.33",
+      "lastUsed": "2026-01-25T09:48:31.826Z",
+      "errorLogs": [
+        {
+          "message": "m.reply is not a function",
+          "timestamp": "2026-01-16T15:54:00.716Z"
+        }
+      ]
+    },
+    "cekDomainHandler": {
+      "name": "cekDomainHandler",
+      "totalCalls": 8,
+      "success": 8,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-16T21:28:29.355Z",
+      "errorLogs": []
+    },
+    "cekButtonHandler": {
+      "name": "cekButtonHandler",
+      "totalCalls": 2,
+      "success": 2,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-16T17:00:07.920Z",
+      "errorLogs": []
+    },
+    "waifuTaggerHandler": {
+      "name": "waifuTaggerHandler",
+      "totalCalls": 1,
+      "success": 1,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-16T17:56:36.027Z",
+      "errorLogs": []
+    },
+    "copilotHandler": {
+      "name": "copilotHandler",
+      "totalCalls": 4,
+      "success": 4,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-19T21:39:29.225Z",
+      "errorLogs": []
+    },
+    "yayoiMixHandler": {
+      "name": "yayoiMixHandler",
+      "totalCalls": 1,
+      "success": 1,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-16T18:15:18.698Z",
+      "errorLogs": []
+    },
+    "qwenImageHandler": {
+      "name": "qwenImageHandler",
+      "totalCalls": 1,
+      "success": 1,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-16T18:20:23.372Z",
+      "errorLogs": []
+    },
+    "qwenEditHandler": {
+      "name": "qwenEditHandler",
+      "totalCalls": 1,
+      "success": 1,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-16T18:24:53.111Z",
+      "errorLogs": []
+    },
+    "pixarHandler": {
+      "name": "pixarHandler",
+      "totalCalls": 1,
+      "success": 1,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-16T18:28:08.475Z",
+      "errorLogs": []
+    },
+    "webReaderHandler": {
+      "name": "webReaderHandler",
+      "totalCalls": 2,
+      "success": 2,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-16T18:42:40.279Z",
+      "errorLogs": []
+    },
+    "shortlinkHandler": {
+      "name": "shortlinkHandler",
+      "totalCalls": 1,
+      "success": 1,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-16T18:46:33.101Z",
+      "errorLogs": []
+    },
+    "lyricsHandler": {
+      "name": "lyricsHandler",
+      "totalCalls": 11,
+      "success": 10,
+      "failed": 0,
+      "errors": 1,
+      "successRate": "90.91",
+      "lastUsed": "2026-01-16T19:01:02.147Z",
+      "errorLogs": [
+        {
+          "message": "m.reply is not a function",
+          "timestamp": "2026-01-16T18:53:24.385Z"
+        }
+      ]
+    },
+    "listDomainHandler": {
+      "name": "listDomainHandler",
+      "totalCalls": 9,
+      "success": 9,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-25T09:43:51.001Z",
+      "errorLogs": []
+    },
+    "whoisHandler": {
+      "name": "whoisHandler",
+      "totalCalls": 4,
+      "success": 4,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-16T21:52:32.136Z",
+      "errorLogs": []
+    },
+    "proxyHandler": {
+      "name": "proxyHandler",
+      "totalCalls": 4,
+      "success": 4,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-25T09:47:13.967Z",
+      "errorLogs": []
+    },
+    "pinterestHandler": {
+      "name": "pinterestHandler",
+      "totalCalls": 4,
+      "success": 4,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-18T08:17:21.602Z",
+      "errorLogs": []
+    },
+    "pixivHandler": {
+      "name": "pixivHandler",
+      "totalCalls": 1,
+      "success": 1,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-16T22:49:33.173Z",
+      "errorLogs": []
+    },
+    "magicStudioHandler": {
+      "name": "magicStudioHandler",
+      "totalCalls": 1,
+      "success": 1,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-16T23:56:11.428Z",
+      "errorLogs": []
+    },
+    "nanoBananaHandler": {
+      "name": "nanoBananaHandler",
+      "totalCalls": 2,
+      "success": 1,
+      "failed": 0,
+      "errors": 1,
+      "successRate": "50.00",
+      "lastUsed": "2026-01-16T23:58:48.843Z",
+      "errorLogs": [
+        {
+          "message": "Cannot destructure property 'user' of 'jidDecode(...)' as it is undefined.",
+          "timestamp": "2026-01-16T23:57:42.905Z"
+        }
+      ]
+    },
+    "fbDownloaderHandler": {
+      "name": "fbDownloaderHandler",
+      "totalCalls": 3,
+      "success": 3,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-20T17:38:32.209Z",
+      "errorLogs": []
+    },
+    "ocrHandler": {
+      "name": "ocrHandler",
+      "totalCalls": 3,
+      "success": 3,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-17T00:30:55.216Z",
+      "errorLogs": []
+    },
+    "douyinFaaHandler": {
+      "name": "douyinFaaHandler",
+      "totalCalls": 2,
+      "success": 2,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-19T20:30:38.917Z",
+      "errorLogs": []
+    },
+    "editFotoHandler": {
+      "name": "editFotoHandler",
+      "totalCalls": 1,
+      "success": 1,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-17T00:45:56.204Z",
+      "errorLogs": []
+    },
+    "vnaiHandler": {
+      "name": "vnaiHandler",
+      "totalCalls": 1,
+      "success": 1,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-17T07:48:24.419Z",
+      "errorLogs": []
+    },
+    "channelReactHandler": {
+      "name": "channelReactHandler",
+      "totalCalls": 4,
+      "success": 4,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-18T15:53:28.656Z",
+      "errorLogs": []
+    },
+    "jadibotHandler": {
+      "name": "jadibotHandler",
+      "totalCalls": 9,
+      "success": 9,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-18T21:38:56.528Z",
+      "errorLogs": []
+    },
+    "cancelJadibotHandler": {
+      "name": "cancelJadibotHandler",
+      "totalCalls": 5,
+      "success": 5,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-18T21:40:42.258Z",
+      "errorLogs": []
+    },
+    "listJadibotHandler": {
+      "name": "listJadibotHandler",
+      "totalCalls": 1,
+      "success": 1,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-18T21:27:24.836Z",
+      "errorLogs": []
+    },
+    "delJadibotHandler": {
+      "name": "delJadibotHandler",
+      "totalCalls": 2,
+      "success": 2,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-18T21:28:24.709Z",
+      "errorLogs": []
+    },
+    "qwenHandler": {
+      "name": "qwenHandler",
+      "totalCalls": 2,
+      "success": 2,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-19T21:32:28.759Z",
+      "errorLogs": []
+    },
+    "openaiHandler": {
+      "name": "openaiHandler",
+      "totalCalls": 1,
+      "success": 1,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-19T21:35:48.643Z",
+      "errorLogs": []
+    },
+    "braveHandler": {
+      "name": "braveHandler",
+      "totalCalls": 1,
+      "success": 1,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-19T21:46:30.623Z",
+      "errorLogs": []
+    },
+    "ciciHandler": {
+      "name": "ciciHandler",
+      "totalCalls": 1,
+      "success": 1,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-19T21:52:10.070Z",
+      "errorLogs": []
+    },
+    "perplexityHandler": {
+      "name": "perplexityHandler",
+      "totalCalls": 2,
+      "success": 2,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-19T21:58:29.966Z",
+      "errorLogs": []
+    },
+    "hdvidHandler": {
+      "name": "hdvidHandler",
+      "totalCalls": 2,
+      "success": 2,
+      "failed": 0,
+      "errors": 0,
+      "successRate": "100.00",
+      "lastUsed": "2026-01-27T12:46:10.992Z",
+      "errorLogs": []
     }
   },
   "global": {
-    "totalCommands": 515,
-    "totalSuccess": 491,
-    "totalFailed": 19,
-    "totalErrors": 5,
+    "totalCommands": 1203,
+    "totalSuccess": 1155,
+    "totalFailed": 29,
+    "totalErrors": 19,
     "startDate": "2026-01-11T14:00:18.796Z"
   },
   "lastReset": "2026-01-11T14:00:18.796Z"

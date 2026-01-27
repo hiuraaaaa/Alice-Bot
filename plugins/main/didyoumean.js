@@ -1,22 +1,24 @@
 import didyoumean from 'didyoumean';
 import similarity from 'similarity';
 
-let handler = m => m;
-
-handler.before = async function (m, { sock, isCmd, body }) {
+const handler = async (msg, { sock, body, sender, from }) => {
     // Hanya jalankan jika pesan diawali prefix dan bukan dari bot sendiri
-    if (!isCmd || m.key.fromMe) return;
-
-    const prefix = global.prefix || '.';
-    // Ambil teks setelah prefix (misal: .mennu -> mennu)
-    const noPrefix = body.slice(prefix.length).trim().split(' ')[0].toLowerCase();
+    if (msg.key.fromMe) return;
     
-    // Ambil semua daftar command dari plugins yang terdaftar di global.plugins
+    const prefix = global.prefix || '.';
+    
+    // Cek apakah ada prefix
+    if (!body.startsWith(prefix)) return;
+    
+    // Ambil teks setelah prefix
+    const noPrefix = body.slice(prefix.length).trim().split(' ')[0].toLowerCase();
+    if (!noPrefix) return;
+    
+    // Ambil semua daftar command dari plugins
     let alias = [];
     for (const key in global.plugins) {
         const plugin = global.plugins[key];
         if (plugin.help) {
-            // Masukkan semua help ke dalam array alias
             if (Array.isArray(plugin.help)) {
                 alias.push(...plugin.help);
             } else {
@@ -25,7 +27,7 @@ handler.before = async function (m, { sock, isCmd, body }) {
         }
     }
 
-    // Jika command sudah benar (ada di daftar), tidak perlu jalankan didyoumean
+    // Jika command sudah benar, tidak perlu jalankan didyoumean
     if (alias.includes(noPrefix)) return;
 
     // Cari kemiripan kata
@@ -35,16 +37,15 @@ handler.before = async function (m, { sock, isCmd, body }) {
     let sim = similarity(noPrefix, mean);
     let percent = parseInt(sim * 100);
 
-    // Hanya tampilkan jika kemiripan di atas 50% agar tidak mengganggu
+    // Hanya tampilkan jika kemiripan di atas 50%
     if (percent < 50) return;
 
-    let text = `Halo *${m.pushName || 'Kak'}* 👋\n\nApakah Anda sedang mencari perintah berikut?\n\n◦ *Command:* ${prefix}${mean}\n◦ *Kemiripan:* ${percent}%\n\n_Ketik ulang perintah dengan benar ya!_`;
+    let text = `Halo *${msg.pushName || 'Kak'}* 👋\n\nApakah Anda sedang mencari perintah berikut?\n\n◦ *Command:* ${prefix}${mean}\n◦ *Kemiripan:* ${percent}%\n\n_Ketik ulang perintah dengan benar ya!_`;
 
-    // Mengirim pesan dengan gaya Neura
-    await sock.sendMessage(m.key.remoteJid, {
+    await sock.sendMessage(from, {
         text: text,
         contextInfo: {
-            mentionedJid: [m.sender],
+            mentionedJid: [sender],
             externalAdReply: {
                 title: 'DID YOU MEAN?',
                 body: global.botName,
@@ -54,7 +55,10 @@ handler.before = async function (m, { sock, isCmd, body }) {
                 renderLargerThumbnail: false
             }
         }
-    }, { quoted: m });
+    }, { quoted: msg });
 };
+
+// ✅ Ubah jadi all function
+handler.all = handler;
 
 export default handler;

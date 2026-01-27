@@ -27,6 +27,44 @@ export default async function handler(opts) {
 
     if (!global.isPublic && !isOwner) return;
 
+    // ✅ ANTI-SPAM CHECK (sebelum lock)
+    if (!isPremium && !isOwner) {
+        const spamCheck = checkSpam(senderId, isOwner);
+
+        console.log(`[HANDLER] Spam check ${senderId}:`, spamCheck);
+
+        if (spamCheck.isBanned) {
+            const remaining = spamCheck.remainingTime || 0;
+            console.log(`[HANDLER] 🚫 Blocked banned user: ${senderId}`);
+            return reply(
+                `🚫 *Kamu telah di-BAN* karena spam!\n\n` +
+                `⏳ Sisa waktu: ${remaining} detik\n\n` +
+                `Hubungi owner jika ini kesalahan.`
+            );
+        }
+
+        if (spamCheck.isSpam) {
+            const { warnings, remainingTime, willBan } = spamCheck;
+            const config = getAntiSpamConfig();
+
+            console.log(`[HANDLER] ⚠️ Spam detected: ${senderId} (${warnings}x)`);
+
+            if (willBan) {
+                return reply(
+                    `🚫 *KAMU DI-BAN!*\n\n` +
+                    `Alasan: Spam berlebihan (${warnings}x warning)\n` +
+                    `Durasi: ${config.banDuration / 60000} menit`
+                );
+            }
+
+            return reply(
+                `⚠️ *SPAM TERDETEKSI!*\n\n` +
+                `⚠️ Warning: ${warnings}/${config.warnLimit}\n` +
+                `⏳ Tunggu ${remainingTime} detik sebelum kirim pesan lagi`
+            );
+        }
+    }
+
     const lockAcquired = await acquireLock(senderId, 3000);
     if (!lockAcquired) {
         console.warn(`[LOCK FAILED] ${senderId} - Message dropped`);
@@ -34,25 +72,6 @@ export default async function handler(opts) {
     }
 
     try {
-        if (!isPremium && !isOwner) {
-            const spamCheck = checkSpam(senderId, isOwner);
-
-            if (spamCheck.isBanned) {
-                return reply('🚫 *Kamu telah di-BAN* karena spam!\n\nHubungi owner jika ini kesalahan.');
-            }
-
-            if (spamCheck.isSpam) {
-                const { warnings, remainingTime, willBan } = spamCheck;
-                const config = getAntiSpamConfig();
-
-                if (willBan) {
-                    return reply(`🚫 *KAMU DI-BAN!*\n\nAlasan: Spam berlebihan (${warnings}x warning)\nDurasi: ${config.banDuration / 60000} menit`);
-                }
-
-                return reply(`⚠️ *SPAM TERDETEKSI!*\n\n⚠️ Warning: ${warnings}/${config.warnLimit}\n⏳ Tunggu ${remainingTime} detik`);
-            }
-        }
-
         const toRegex = (cmd) => {
             if (!cmd) return null;
             if (cmd instanceof RegExp) return cmd;
@@ -71,19 +90,47 @@ export default async function handler(opts) {
 
             const pluginName = plugin.name || fileName.replace('.js', '');
 
-            if (!isCmd && typeof plugin.all === 'function') {
+            // ✅ Plugin 'all' jalan untuk SEMUA pesan
+            if (typeof plugin.all === 'function') {
                 try {
-                    await plugin.all(msg, { sock, reply, sender, from, body, isOwner, isPremium });
+                    await plugin.all(msg, { 
+                        sock, 
+                        reply, 
+                        sender, 
+                        from, 
+                        body, 
+                        isOwner, 
+                        isPremium, 
+                        isCmd, 
+                        args, 
+                        text, 
+                        commandText 
+                    });
                 } catch(e) {
                     console.error(`[PLUGIN ALL ERROR] ${pluginName}:`, e);
                 }
             }
 
-            if (!isCmd || !plugin.command) continue;
+            // ✅ Command matching
+            if (!plugin.command) continue;
+            
+            const shouldSkipPrefixCheck = plugin.noPrefix === true;
+            
+            if (!isCmd && !shouldSkipPrefixCheck) continue;
 
             const cmdRegex = toRegex(plugin.command);
-            if (!cmdRegex || !cmdRegex.test(commandText)) continue;
+            
+            let matched = false;
+            if (shouldSkipPrefixCheck) {
+                const firstWord = body.trim().split(/\s+/)[0].toLowerCase();
+                matched = cmdRegex && cmdRegex.test(firstWord);
+            } else {
+                matched = cmdRegex && cmdRegex.test(commandText);
+            }
+            
+            if (!matched) continue;
 
+            // ✅ PERMISSION CHECKS
             if (plugin.owner && !isOwner) {
                 trackCommand(pluginName, 'failed', 'Access denied: owner only');
                 return reply(global.mess.owner);
@@ -91,7 +138,12 @@ export default async function handler(opts) {
 
             if (plugin.premium && !isPremium && !isOwner) {
                 trackCommand(pluginName, 'failed', 'Access denied: premium only');
-                return reply(`👑 *PREMIUM ONLY*\n\nPerintah ini hanya untuk user premium.\n\n💎 Upgrade ke premium untuk akses unlimited!\nHubungi owner untuk info lebih lanjut.`);
+                return reply(
+                    `👑 *PREMIUM ONLY*\n\n` +
+                    `Perintah ini hanya untuk user premium.\n\n` +
+                    `💎 Upgrade ke premium untuk akses unlimited!\n` +
+                    `Hubungi owner untuk info lebih lanjut.`
+                );
             }
 
             if (plugin.group && !isGroup) {
@@ -104,6 +156,7 @@ export default async function handler(opts) {
                 return reply(global.mess.private);
             }
 
+            // ✅ ADMIN CHECKS
             if ((plugin.admin || plugin.botAdmin) && isGroup) {
                 const metadata = await sock.groupMetadata(from).catch((err) => {
                     console.error(`[GROUP METADATA ERROR] ${pluginName}:`, err);
@@ -134,6 +187,7 @@ export default async function handler(opts) {
                 return reply('❌ Perintah ini hanya bisa digunakan di grup.');
             }
 
+            // ✅ LIMIT CHECK
             if (plugin.limit && !isOwner && !isPremium) {
                 const userLimit = getLimit(senderId);
                 const limitInfo = getLimitInfo(senderId);
@@ -153,6 +207,7 @@ export default async function handler(opts) {
                 }
             }
 
+            // ✅ COOLDOWN CHECK
             if (plugin.cooldown && !isOwner) {
                 const last = getCooldown(senderId, pluginName);
                 const now = Date.now();
@@ -168,6 +223,7 @@ export default async function handler(opts) {
                 }
             }
 
+            // ✅ EXECUTE PLUGIN
             let executionSuccess = false;
             let shouldConsume = true;
             
@@ -196,6 +252,7 @@ export default async function handler(opts) {
                 executionSuccess = false;
             }
 
+            // ✅ POST-EXECUTION: Consume limit & set cooldown
             if (executionSuccess) {
                 if (plugin.limit && !isOwner && !isPremium && shouldConsume) {
                     const consumed = consumeLimit(senderId, plugin.limit);
@@ -215,4 +272,4 @@ export default async function handler(opts) {
     } finally {
         releaseLock(senderId);
     }
-            }
+}

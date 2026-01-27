@@ -13,7 +13,7 @@ const handler = async (m, { sock, text, isOwner }) => {
     
     if (!text) {
         return await sock.sendMessage(m.key.remoteJid, {
-            text: `❌ *Masukkan command shell!*\n\n📝 *Contoh:*\n${global.prefix[0]}$ ls -la\n${global.prefix[0]}$ pm2 status\n${global.prefix[0]}$ df -h`
+            text: `❌ *Masukkan command shell!*\n\n📝 *Contoh:*\n$ ls -la\n$ pm2 status\n$ df -h`
         }, { quoted: m });
     }
 
@@ -52,6 +52,7 @@ const handler = async (m, { sock, text, isOwner }) => {
         });
 
     } catch (error) {
+        const start = Date.now();
         const time = Date.now() - start;
         
         let errorOutput = error.message;
@@ -80,5 +81,6 @@ handler.help = ['exec', '$'];
 handler.tags = ['owner'];
 handler.command = /^(exec|\$)$/i;
 handler.owner = true;
+handler.noPrefix = true; // ✅ Tambahkan ini
 
 export default handler;

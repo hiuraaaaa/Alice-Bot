@@ -1,6 +1,14 @@
 {
-  "users": {},
-  "lastReset": 1768496400000,
+  "users": {
+    "216437025165553": {
+      "used": 0,
+      "remaining": 20,
+      "max": 20,
+      "isPremium": false,
+      "lastUpdated": 1768598933607
+    }
+  },
+  "lastReset": 1769101200000,
   "config": {
     "dailyLimit": 20,
     "premiumMultiplier": 2,
